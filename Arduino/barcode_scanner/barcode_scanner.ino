@@ -6,8 +6,8 @@
 #include <HyperDisplay_SSD1309.h>
 #include <SoftwareSerial.h>
 
-#define BARCODE_TX D3
-#define BARCODE_RX D4
+#define BARCODE_TX D6
+#define BARCODE_RX D7
 SoftwareSerial barcode(BARCODE_RX, BARCODE_TX);
 
 void setup() {
