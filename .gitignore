@@ -1,3 +1,4 @@
 credentials
 .*.sw*
 __pycache__
+creds.h
