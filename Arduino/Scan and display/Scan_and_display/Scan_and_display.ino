@@ -26,7 +26,7 @@ void setup() {
   Serial.println("Hello dolly!");
   barcode.begin(9600);
   
-  while ( !display.begin(SSD1306_SWITCHCAPVCC, I2C_ADDR) ){
+  while ( !display.begin(SSD1306_EXTERNALVCC, I2C_ADDR) ){
       // Loop forever
       Serial.println("Display allocation failed.");
       delay(1000);
@@ -34,8 +34,6 @@ void setup() {
 
   display.clearDisplay();
   
-  display.drawPixel(10, 10, WHITE);
-
   display.display();
 
   
@@ -56,11 +54,10 @@ void loop(){
       char input = barcode.read();
       Serial.print(input);
 
-      
-      display.print(input);
-      display.display();
-      
+      display.print(input);      
     }
+    
+    display.display();
     Serial.println();
     display.clearDisplay();
   }
