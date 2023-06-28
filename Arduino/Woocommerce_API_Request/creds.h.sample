@@ -1,0 +1,5 @@
+#define STASSID ""
+#define STAPSK ""
+#define KEY ""
+#define SECRET ""
+#define HOST "google.com"
