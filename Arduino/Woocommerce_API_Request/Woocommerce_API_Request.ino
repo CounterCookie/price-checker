@@ -17,11 +17,8 @@ const char* password = STAPSK;
 const char* key = KEY;
 const char* secret = SECRET;
 
-String barcode = "627765355079";
 String host = HOST;
-String url = "/wp-json/wc/v3/products?search=" + barcode + "&consumer_key=" + key + "&consumer_secret=" + secret;
 
-String full_address = "https://" + host + url;
 
 WiFiClientSecure client;
 HTTPClient http;
@@ -42,8 +39,8 @@ void setup() {
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
- client.setInsecure();
-  
+  client.setInsecure();
+
   Serial.print("Connecting to ");
   Serial.println(host);
 
@@ -52,24 +49,35 @@ void setup() {
     return;
   }
 
-  Serial.print("Requesting URL: ");
-  Serial.println(url);
-
-  http.begin(client, full_address);
-
-
-
-
-  http.GET();
-
-  
-  JSONVar product = JSON.parse( http.getString() );
-  Serial.println(product[0]["price"]);
 
 }
 
 
 
 void loop() {
+  String barcode;
+  while ( Serial.available() > 0 || barcode.length() < 5 ) {
+    barcode = Serial.readStringUntil('\n');
+  }
 
+  String host = HOST;
+  String url = "/wp-json/wc/v3/products?search=" + barcode + "&consumer_key=" + key + "&consumer_secret=" + secret;
+  String full_address = "https://" + host + url;
+
+
+  Serial.print("Requesting URL: ");
+  Serial.println(url);
+
+  Serial.println("http begin");
+  http.begin(client, full_address);
+
+
+  http.GET();
+
+;
+  
+  JSONVar product = JSON.parse(http.getString());
+  
+  Serial.println("Printing price");
+  Serial.println(product[0]["price"]);
 }
