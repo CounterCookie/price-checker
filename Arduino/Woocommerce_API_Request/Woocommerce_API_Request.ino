@@ -1,7 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
 #include <ESP8266HTTPClient.h>
-#include <Arduino_JSON.h>
+#include <ArduinoJson.h>
 #include "creds.h"
 
 // IMPORTED FROM 'creds.h'
@@ -53,10 +53,9 @@ void setup() {
 }
 
 
-
 void loop() {
   String barcode;
-  while ( Serial.available() > 0 || barcode.length() < 5 ) {
+  while ( Serial.available() > 0 || barcode.length() < 1 ) {
     barcode = Serial.readStringUntil('\n');
   }
 
@@ -69,15 +68,19 @@ void loop() {
   Serial.println(url);
 
   Serial.println("http begin");
+  http.useHTTP10(true);
   http.begin(client, full_address);
 
 
   http.GET();
 
-;
+  DynamicJsonDocument product(13500);
+
+  deserializeJson(product, http.getStream());
+
+  const char* price = product[0]["price"];
+
+  Serial.println(price);
   
-  JSONVar product = JSON.parse(http.getString());
-  
-  Serial.println("Printing price");
-  Serial.println(product[0]["price"]);
+
 }
