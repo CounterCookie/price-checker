@@ -1,0 +1,14 @@
+Sreen:
+  Usable part:
+    width:  2.9 cm
+    length: 5.8 cm
+  cutout:
+    width: 4.0 cm
+    length: 6.2 cm
+
+Barcode Scanner:
+  width: 2.4 cm
+  height: 0.9 cm
+  depth:  2.2 cm
+  Placement:
+    Should be placed inside a tube of some sort inside the enclosure to ensure there is proper distance from the barcode.
