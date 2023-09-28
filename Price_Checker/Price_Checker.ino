@@ -31,6 +31,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 SoftwareSerial barcodeReader(BARCODE_RX, BARCODE_TX);
 WiFiClientSecure client;
 HTTPClient http;
+// Support streaming http 1.0 doesn't support reusing a single connection.
+http.useHTTP10(true);
 
 void setup() {
   // Initialize both Serial ports. change to preferred baud rate if necessary.
@@ -75,8 +77,7 @@ void setup() {
 
 }
 
-
-void loop() {
+void displaySetup(){
   // Display setup
   display.clearDisplay();
   display.setTextColor(WHITE);
@@ -84,13 +85,18 @@ void loop() {
   display.setFont(&FreeMono9pt7b);
   display.setTextSize(1);
   display.display();
+}
+
+void loop() {
+  displaySetup();
   
   String barcode;
   
-  while ( barcodeReader.available() > 0 || barcode.length() < 1 ) {
+  while ( barcodeReader.available() > 0 || barcode.length() < 4 ) {
     barcode = barcodeReader.readStringUntil('\n');
   }
 
+  // Remove the newline
   barcode.trim();
 
   Serial.println(barcode);
@@ -104,9 +110,9 @@ void loop() {
   Serial.println(full_address);
 
   Serial.println("http begin");
-  http.useHTTP10(true);
   http.begin(client, full_address);
   Serial.println(http.GET());
+  // Just use a large chunk of ram until we can properly stream json.
   DynamicJsonDocument product(10000);
   deserializeJson(product, http.getStream());
   const char* price = product[0]["price"];
