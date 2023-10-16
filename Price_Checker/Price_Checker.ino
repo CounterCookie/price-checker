@@ -123,8 +123,19 @@ void loop() {
   // Just use a large chunk of ram until we can properly stream json.
   DynamicJsonDocument product(10000);
   deserializeJson(product, http.getStream());
-  const char* price = product[0]["price"];
 
+  if (measureJson(product) < 100) {
+    Serial.println("Cashier");
+    display.setCursor(0, 40);
+    display.print("Cashier");
+    display.display();
+    delay(2000);
+    displaySetup();
+    return;
+  }
+  
+  const char* price = product[0]["price"];
+  
   Serial.println(price);
   int priceLength = strlen(price);
   Serial.println(priceLength);
@@ -140,7 +151,7 @@ void loop() {
   } else {
     display.setCursor(0, 40);
   }
-  
+  displaySetup();
   display.print(price);
   display.display();
   delay(2000);
