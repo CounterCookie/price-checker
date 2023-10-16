@@ -6,7 +6,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <SoftwareSerial.h>
-#include <Fonts/FreeMono9pt7b.h>
+#include <Fonts/FreeSans24pt7b.h>
 
 #include "creds.h"
 
@@ -35,7 +35,7 @@ WiFiClientSecure client;
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
 OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 SoftwareSerial barcodeReader(BARCODE_RX, BARCODE_TX);
-  HTTPClient http;
+HTTPClient http;
 
 void setup() {
 
@@ -77,8 +77,9 @@ void setup() {
   }
 
   // Clear buffer and display nothing.
-  display.clearDisplay();
+  display.print("TEST");
   display.display();
+  displaySetup();
 
 
 }
@@ -87,23 +88,25 @@ void displaySetup(){
   // Display setup
   display.clearDisplay();
   display.setTextColor(WHITE);
-  display.setCursor(0, 25);
-  display.setFont(&FreeMono9pt7b);
+  display.setCursor(38, 33);
+  display.setFont(&FreeSans24pt7b);
   display.setTextSize(1);
   display.display();
 }
 
 void loop() {
-  displaySetup();
   
   String barcode;
   
-  while ( barcodeReader.available() > 0 || barcode.length() < 4 ) {
+  while ( barcode.length() < 4 || barcodeReader.available() > 0 ) {
     barcode = barcodeReader.readStringUntil('\n');
   }
+  
+  displaySetup();
 
   // Remove the newline
   barcode.trim();
+
 
   Serial.println(barcode);
   
@@ -124,9 +127,10 @@ void loop() {
   const char* price = product[0]["price"];
 
   Serial.println(price);
-  
+  Serial.println(strlen(price));
   display.print(price);
- 
   display.display();
+
   delay(2000);
+  displaySetup();
 }
