@@ -128,12 +128,17 @@ void loop() {
   Serial.println(price);
   int priceLength = strlen(price);
   Serial.println(priceLength);
+
+  // Adjust cursor position depending on price length.
+  // This is only calibrated for the current font.
   if (priceLength == 4) {
     display.setCursor(32, 40);
   } else if (priceLength == 5) {
     display.setCursor(22, 40);
   } else if (priceLength == 6) {
     display.setCursor(12, 40);
+  } else {
+    display.setCursor(0, 40);
   }
   
   display.print(price);
