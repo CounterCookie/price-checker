@@ -6,7 +6,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <SoftwareSerial.h>
-#include <Fonts/FreeSans24pt7b.h>
+#include <Fonts/FreeSans18pt7b.h>
 
 #include "creds.h"
 
@@ -77,7 +77,7 @@ void setup() {
   }
 
   // Clear buffer and display nothing.
-  display.print("TEST");
+  display.print("");
   display.display();
   displaySetup();
 
@@ -88,8 +88,7 @@ void displaySetup(){
   // Display setup
   display.clearDisplay();
   display.setTextColor(WHITE);
-  display.setCursor(38, 33);
-  display.setFont(&FreeSans24pt7b);
+  display.setFont(&FreeSans18pt7b);
   display.setTextSize(1);
   display.display();
 }
@@ -127,10 +126,18 @@ void loop() {
   const char* price = product[0]["price"];
 
   Serial.println(price);
-  Serial.println(strlen(price));
+  int priceLength = strlen(price);
+  Serial.println(priceLength);
+  if (priceLength == 4) {
+    display.setCursor(32, 40);
+  } else if (priceLength == 5) {
+    display.setCursor(22, 40);
+  } else if (priceLength == 6) {
+    display.setCursor(12, 40);
+  }
+  
   display.print(price);
   display.display();
-
   delay(2000);
   displaySetup();
 }
