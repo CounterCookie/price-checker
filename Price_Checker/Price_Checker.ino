@@ -129,7 +129,7 @@ void loop() {
     display.setCursor(0, 40);
     display.print("Cashier");
     display.display();
-    delay(2000);
+    delay(3000);
     displaySetup();
     return;
   }
@@ -154,6 +154,6 @@ void loop() {
   displaySetup();
   display.print(price);
   display.display();
-  delay(2000);
+  delay(3000);
   displaySetup();
 }
