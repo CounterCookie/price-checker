@@ -7,20 +7,23 @@
 #include <Adafruit_SSD1306.h>
 #include <SoftwareSerial.h>
 #include <Fonts/FreeSans18pt7b.h>
+#include <Fonts/FreeMono9pt7b.h>
 
 #include "creds.h"
 
 
-#define BARCODE_TX D4
+#define BARCODE_TX D2
 #define BARCODE_RX D1
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 
-#define OLED_MOSI   D7
-#define OLED_CLK   D5
-#define OLED_DC    D2
-#define OLED_CS    D8
-#define OLED_RESET D3
+#define OLED_MOSI   D5
+#define OLED_CLK   D4
+#define OLED_DC    D3
+#define OLED_CS    D6
+#define OLED_RESET D7
+
+#define BUTTON D8
 
 const char* ssid = STASSID;
 const char* password = STAPSK;
@@ -40,8 +43,8 @@ HTTPClient http;
 void setup() {
 
   // Initialize both Serial ports. change to preferred baud rate if necessary.
-  Serial.begin(115200);
-  barcodeReader.begin(115200);
+  Serial.begin(9600);
+  barcodeReader.begin(9600);
 
   // Support streaming http 1.0 doesn't support reusing a single connection.
   http.useHTTP10(true);
@@ -64,11 +67,14 @@ void setup() {
 
   Serial.print("Connecting to ");
   Serial.println(host);
+  
 
   if (!client.connect(host, 443)) {
     Serial.println("Connection failed");
     return;
   }
+    Serial.print("Connected");
+
 
   while ( !display.begin(SSD1306_SWITCHCAPVCC) ){
     // Loop forever
@@ -93,6 +99,14 @@ void displaySetup(){
   display.display();
 }
 
+void displayStock(int stock){
+  if ( digitalRead(BUTTON) == HIGH ) {
+    display.setFont(&FreeMono9pt7b);
+    display.setCursor(58, 60);
+    display.print(stock);
+  }
+}
+
 void loop() {
   
   String barcode;
@@ -107,25 +121,25 @@ void loop() {
   barcode.trim();
 
 
-  Serial.println(barcode);
+  //Serial.println(barcode);
   
   String host = HOST;
   String url = "/wp-json/wc/v3/products?search=" + barcode + "&consumer_key=" + key + "&consumer_secret=" + secret;
   String full_address = "https://" + host + url;
 
 
-  Serial.print("Requesting URL: ");
-  Serial.println(full_address);
+  //Serial.print("Requesting URL: ");
+  //Serial.println(full_address);
 
-  Serial.println("http begin");
+  //Serial.println("http begin");
   http.begin(client, full_address);
-  Serial.println(http.GET());
+  http.GET();
   // Just use a large chunk of ram until we can properly stream json.
   DynamicJsonDocument product(10000);
   deserializeJson(product, http.getStream());
 
   if (measureJson(product) < 100) {
-    Serial.println("Cashier");
+    //Serial.println("Cashier");
     display.setCursor(0, 40);
     display.print("Cashier");
     display.display();
@@ -135,10 +149,11 @@ void loop() {
   }
   
   const char* price = product[0]["price"];
-  
-  Serial.println(price);
+  int stock = product[0]["stock_quantity"];
+
+  //Serial.println(price);
   int priceLength = strlen(price);
-  Serial.println(priceLength);
+  //Serial.println(priceLength);
 
   // Adjust cursor position depending on price length.
   // This is only calibrated for the current font.
@@ -153,6 +168,7 @@ void loop() {
   }
   displaySetup();
   display.print(price);
+  displayStock(stock);
   display.display();
   delay(3000);
   displaySetup();
