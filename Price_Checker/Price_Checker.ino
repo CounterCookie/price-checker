@@ -41,7 +41,7 @@ void setup() {
 
   // Initialize both Serial ports. change to preferred baud rate if necessary.
   Serial.begin(115200);
-  barcodeReader.begin(9600);
+  barcodeReader.begin(115200);
 
   // Support streaming http 1.0 doesn't support reusing a single connection.
   http.useHTTP10(true);
