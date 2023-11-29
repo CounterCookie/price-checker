@@ -12,18 +12,15 @@
 #include "creds.h"
 
 
-#define BARCODE_TX D2
-#define BARCODE_RX D1
+#define BARCODE_TX D5
+#define BARCODE_RX D6
+
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
+#define DISPLAY_I2C_ADDRESS 0x3C
+#define OLED_RESET -1
 
-#define OLED_MOSI   D5
-#define OLED_CLK   D4
-#define OLED_DC    D3
-#define OLED_CS    D6
-#define OLED_RESET D7
-
-#define BUTTON D8
+#define BUTTON D7
 
 const char* ssid = STASSID;
 const char* password = STAPSK;
@@ -35,16 +32,15 @@ const char* secret = SECRET;
 String host = HOST;
 WiFiClientSecure client;
 
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
-OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 SoftwareSerial barcodeReader(BARCODE_RX, BARCODE_TX);
 HTTPClient http;
 
 void setup() {
 
   // Initialize both Serial ports. change to preferred baud rate if necessary.
-  Serial.begin(9600);
-  barcodeReader.begin(9600);
+  Serial.begin(115200);
+  barcodeReader.begin(115200);
 
   // Support streaming http 1.0 doesn't support reusing a single connection.
   http.useHTTP10(true);
@@ -76,7 +72,7 @@ void setup() {
     Serial.print("Connected");
 
 
-  while ( !display.begin(SSD1306_SWITCHCAPVCC) ){
+  while ( !display.begin(SSD1306_SWITCHCAPVCC, DISPLAY_I2C_ADDRESS) ){
     // Loop forever
     Serial.println("Display allocation failed.");
     delay(1000);
@@ -121,7 +117,7 @@ void loop() {
   barcode.trim();
 
 
-  //Serial.println(barcode);
+  Serial.println(barcode);
   
   String host = HOST;
   String url = "/wp-json/wc/v3/products?search=" + barcode + "&consumer_key=" + key + "&consumer_secret=" + secret;
