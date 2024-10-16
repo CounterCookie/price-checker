@@ -1,5 +1,5 @@
-#define STASSID ""
-#define STAPSK ""
-#define KEY ""
-#define SECRET ""
-#define HOST "google.com"
+#define STASSID "" // Wifi SSID name, only 2.4ghz
+#define STAPSK "" // Wifi password
+#define KEY ""	// Woocommerce API Key
+#define SECRET "" // Woocommerce API secret
+#define HOST "google.com" // Wordpress/Woocommerce website. API URL and protocol are completed by code.

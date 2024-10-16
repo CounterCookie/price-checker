@@ -11,16 +11,16 @@
 
 #include "creds.h"
 
-
+// Pin and address definitions.
 #define BARCODE_TX D5
 #define BARCODE_RX D6
+#define BUTTON D7
+#define DISPLAY_I2C_ADDRESS 0x3C
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
-#define DISPLAY_I2C_ADDRESS 0x3C
 #define OLED_RESET -1
 
-#define BUTTON D7
 
 const char* ssid = STASSID;
 const char* password = STAPSK;
