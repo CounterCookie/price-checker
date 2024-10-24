@@ -1,5 +1,7 @@
-# Retail Shelf Pricechecker
+# Retail Shelf Price Checker
 Arduino sketch files and enclosure 3d models for a retail shelf price checker.\
+\
+![Final product mounted](https://raw.githubusercontent.com/CounterCookie/price-checker/refs/heads/main/Design/Price%20Checker%20Mounted.jpg)
 \
 The price checker consists of an ESP 8266 along with a barcode scanner module and an I2C/SPI SSD1309 OLED display.\
 \
